@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños! ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Overlay for "Open Gift" interaction */
+        #start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 107, 107, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #start-overlay h2 {
+            color: white;
+            font-family: 'Pacifico', cursive;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        #start-btn {
+            padding: 15px 40px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            color: #ff6b6b;
+            font-family: 'Pacifico', cursive;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            animation: pulse-btn 2s infinite;
+        }
+
+        #start-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse-btn {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 500px;
+            position: relative;
+            z-index: 1;
+            /* Initially hidden until start */
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .container.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff6b6b;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px #fff;
+        }
+
+        p {
+            color: #555;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .invitation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #ffc3c3;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            position: relative;
+            height: 60px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .btn-yes {
+            background-color: #ff6b6b;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            background-color: #ff5252;
+        }
+
+        .btn-no {
+            background-color: #eee;
+            color: #555;
+            position: absolute;
+        }
+
+        .heart {
+            color: #ff6b6b;
+            animation: pulse 1s infinite alternate;
+            display: inline-block;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Success Message styling */
+        .success-message {
+            display: none;
+            /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 500px;
+            z-index: 2;
+        }
+
+        .success-message img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Youtube hidden player - must be visible 1px for some browsers */
+        #player-container-wrapper {
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0.01;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Overlay Inicial -->
+    <div id="start-overlay">
+        <h2>Tienes una sorpresa... 🎁</h2>
+        <button id="start-btn" onclick="startCelebration()">Abrir 🎉</button>
+    </div>
+
+    <!-- Hidden Youtube Player Wrapper -->
+    <div id="player-container-wrapper">
+        <div id="player-container"></div>
+    </div>
+
+    <div class="container" id="main-card">
+        <h1>¡Feliz Cumpleaños! 🎂</h1>
+
+        <div id="messages">
+            <p>Hoy no es un día cualquiera, hoy el mundo brilla un poquito más porque tú estás en él. ✨</p>
+            <p>Dicen que los mejores regalos vienen en empaques pequeños, pero <span class="highlight">tú eres el regalo
+                    más grande</span> que me ha dado la vida.</p>
+            <p>Espero que hoy sonrías tanto y seas Feliz... y que guardes un poquito de esa sonrisa para
+                mí. 😉</p>
+        </div>
+
+        <div class="invitation">
+            <p>Ya eres unica y hermosa... <br>
+                ¿Qué dices si te invito a ser la protagonista de mi próxima cita? <span class="heart">❤️</span></p>
+
+            <div class="btn-container">
+                <button class="btn-yes" onclick="acceptInvitation()">¡Sí, acepto! 😍</button>
+                <button class="btn-no" id="btnNo" onmouseover="moveButton()">No 🙈</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="success-card">
+        <h1>¡Sabía que dirías que sí! 😏</h1>
+        <p>Prepárate, porque voy a hacer que este cumpleaños sea inolvidable.</p>
+        <p>Ansio que llegue ese dia ¡Nos vemos pronto! 🥂❤️</p>
+        <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Celebration Love">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        // Youtube Player API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        var isPlayerReady = false;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player-container', {
+                height: '1',  // At least 1px
+                width: '1',   // At least 1px
+                videoId: 'UlGBqA7ZgOw', // Peter Manjarrés - Que Dios Te Bendiga
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'loop': 1,
+                    'autoplay': 0, // Manual play
+                    'rel': 0,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            console.log("Música lista");
+            isPlayerReady = true;
+            // Optionally set volume
+            event.target.setVolume(100);
+        }
+
+        function onPlayerError(event) {
+            console.error("Error en reproductor:", event.data);
+            // Fallback content or silent fail
+        }
+
+        function startCelebration() {
+            // Hide overlay
+            document.getElementById('start-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('start-overlay').style.display = 'none';
+            }, 500);
+
+            // Show main card
+            const mainCard = document.getElementById('main-card');
+            mainCard.classList.add('visible');
+
+            // Play Music if ready
+            if (player && isPlayerReady) {
+                player.playVideo();
+            } else {
+                // Retry once quickly if not quite ready
+                setTimeout(() => {
+                    if (player && player.playVideo) player.playVideo();
+                }, 1000);
+            }
+
+            // Confetti explosion
+            launchConfetti();
+        }
+
+        function launchConfetti() {
+            var duration = 3000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff9a9e', '#fecfef', '#a18cd1']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff9a9e', '#fecfef', '#a18cd1']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Move 'No' button
+        function moveButton() {
+            const btnNo = document.getElementById('btnNo');
+
+            const maxX = 150;
+            const maxY = 100;
+
+            const randomX = Math.floor(Math.random() * maxX * 2) - maxX;
+            const randomY = Math.floor(Math.random() * maxY * 2) - maxY;
+
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        // Accept invitation
+        function acceptInvitation() {
+            document.getElementById('main-card').style.display = 'none';
+            const successCard = document.getElementById('success-card');
+            successCard.style.display = 'flex';
+
+            var end = Date.now() + (5000);
+            var colors = ['#ff6b6b', '#fecfef', '#ffffff'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+    </script>
+</body>
+
+</html>
